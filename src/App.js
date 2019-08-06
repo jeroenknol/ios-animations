@@ -1,71 +1,83 @@
 import React, { useState, useRef } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
-// import useWindowSize from './Hooks/useWindowSize';
 import smoothValue from './Utilities/smoothValue';
 
 import "./App.css";
 
+// Window
+const WINDOW_HEIGHT = 812;
+const WINDOW_WIDTH = 375;
+// App
+const APP_BORDER_RADIUS = 40;
+// Icon
+const ICON_SIZE = 60;
+const ICON_BORDER_RADIUS = 15;
+const ICON_X = 288;
+const ICON_Y = 725;
+// Home button
+const HOME_BUTTON_WIDTH = 200;
+const HOME_BUTTON_HEIGHT = 6;
+const HOME_BUTTON_OFFSET = 7;
+
+const DRAG_DROPOFF = 400;
+
 const App = () => {
   const constraintsRef = useRef(null);
-  // const windowSize = useWindowSize();
-  // const [isAnimating, setIsAnimating] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
   const [dragStartX, setDragStartX] = useState(null);
   const [dragStartY, setDragStartY] = useState(null);
-
   const dragDeltaX = useMotionValue(0);
   const dragDeltaY = useMotionValue(0);
 
-  // const calculatedX = useMotionValue(288);
-  // const calculatedY = useMotionValue(725);
-  const width = useMotionValue(60);
-  const height = useMotionValue(60);
-
-  const x = useMotionValue(288);
-  const y = useMotionValue(725);
-  // const initialWidth = useMotionValue(60);
-  // const initialHeight = useMotionValue(60);
-  const dragWidth = useTransform(dragDeltaY, [0, -400], [375, 375 / 4]);
-  const dragHeight = useTransform(dragDeltaY, [0, -400], [812, 812 / 4]);
-  const dragX = useTransform(dragWidth, [375, 0], [0, 375/2])
-  const homeButtonWidth = useTransform(dragDeltaY, [0, -400], [200, 200 / 4]);
-  const homeButtonHeight = useTransform(dragDeltaY, [0, -400], [6, 6 / 4]);
+  const width = useMotionValue(ICON_SIZE);
+  const height = useMotionValue(ICON_SIZE);
+  const x = useMotionValue(ICON_X);
+  const y = useMotionValue(ICON_Y);
   const homeButtonX = useMotionValue(0);
   const homeButtonY = useMotionValue(0);
-  const borderRadius = useMotionValue(15);
-  const dragBorderRadius = useTransform(dragDeltaY, [0, -400], [40, 10]);
+  const borderRadius = useMotionValue(ICON_BORDER_RADIUS);
+
+  const dragWidth = useTransform(dragDeltaY, [0, -DRAG_DROPOFF], [WINDOW_WIDTH, WINDOW_WIDTH / 4]);
+  const dragHeight = useTransform(dragDeltaY, [0, -DRAG_DROPOFF], [WINDOW_HEIGHT, WINDOW_HEIGHT / 4]);
+  const dragX = useTransform(dragWidth, [WINDOW_WIDTH, 0], [0, WINDOW_WIDTH/2])
+  const homeButtonWidth = useTransform(dragDeltaY, [0, -DRAG_DROPOFF], [HOME_BUTTON_WIDTH, HOME_BUTTON_WIDTH / 4]);
+  const homeButtonHeight = useTransform(dragDeltaY, [0, -DRAG_DROPOFF], [HOME_BUTTON_HEIGHT, HOME_BUTTON_HEIGHT / 4]);
+  const dragBorderRadius = useTransform(dragDeltaY, [0, -DRAG_DROPOFF], [APP_BORDER_RADIUS, 10]);
+
+  const appY = useTransform(dragDeltaY, [0, -DRAG_DROPOFF, -WINDOW_HEIGHT], [0, -DRAG_DROPOFF, -(WINDOW_HEIGHT - (WINDOW_HEIGHT - DRAG_DROPOFF) / 2)])
 
   const handleClick = (prevState) => {
-    // console.log('App.js - dragDeltaY ', dragDeltaY.get())
     if (!prevState) {
       smoothValue(x, x.get(), 0);
       smoothValue(y, y.get(), 0);
-      // smoothValue(initialHeight, initialHeight.get(), 812);
-      // smoothValue(initialWidth, initialWidth.get(), 375);
-      smoothValue(height, height.get(), 812);
-      smoothValue(width, width.get(), 375);
-      smoothValue(borderRadius, 15, 40);
+      smoothValue(height, height.get(), WINDOW_HEIGHT);
+      smoothValue(width, width.get(), WINDOW_WIDTH);
+      smoothValue(borderRadius, ICON_BORDER_RADIUS, APP_BORDER_RADIUS);
 
-      homeButtonX.set((375 / 2) - (homeButtonWidth.get() / 2));
-      homeButtonY.set(812 - 6 - 7) // windowHeight - homeButtonHeight - paddingBottom
+      homeButtonX.set((WINDOW_WIDTH / 2) - (homeButtonWidth.get() / 2));
+      homeButtonY.set(WINDOW_HEIGHT - HOME_BUTTON_HEIGHT - HOME_BUTTON_OFFSET) // windowHeight - homeButtonHeight - paddingBottom
 
       setIsOpen(true);
     }
   }
 
   const handleDragStart = (e) => {
+    // Store the position where we started the drag
     setDragStartX(e.clientX);
     setDragStartY(e.clientY);
   }
 
   const handleDrag = (e) => {
+    // Calculate and set the delta using the starting position of the drag
     dragDeltaX.set(e.clientX - dragStartX);
     dragDeltaY.set(e.clientY - dragStartY);
 
     x.set(dragX.get() + dragDeltaX.get());
-    y.set(812 + dragDeltaY.get() - dragHeight.get());
+    y.set(WINDOW_HEIGHT + appY.get() - dragHeight.get());
 
-    homeButtonX.set((375 / 2) - (homeButtonWidth.get() / 2) + dragDeltaX.get());
+    homeButtonX.set((WINDOW_WIDTH / 2) - (homeButtonWidth.get() / 2) + dragDeltaX.get());
+    homeButtonY.set(WINDOW_HEIGHT - HOME_BUTTON_HEIGHT - HOME_BUTTON_OFFSET + appY.get())
 
     width.set(dragWidth.get());
     height.set(dragHeight.get());
@@ -77,41 +89,36 @@ const App = () => {
     setDragStartY(null);
 
     smoothValue(dragDeltaY, dragDeltaY.get(), 0);
-    smoothValue(x, x.get(), 0);
-    smoothValue(y, y.get(), 0);
-    smoothValue(homeButtonX, homeButtonX.get(), 175 / 2);
-    smoothValue(homeButtonY, homeButtonY.get(), 812 - 6 - 7);
-    smoothValue(height, height.get(), 812);
-    smoothValue(width, width.get(), 375);
-    smoothValue(borderRadius, borderRadius.get(), 40)
 
-    // if (y.get() > 512) {
-    //   smoothValue(x, x.get(), 288);
-    //   smoothValue(y, y.get(), 725);
-    // } else {
-    //   smoothValue(x, x.get(), 0);
-    //   smoothValue(y, y.get(), 0);
-    // }
+    if (dragDeltaY.get() < -DRAG_DROPOFF) {
+      setIsOpen(false);
+      smoothValue(x, x.get(), ICON_X);
+      smoothValue(y, y.get(), ICON_Y);
+      smoothValue(height, height.get(), ICON_SIZE);
+      smoothValue(width, width.get(), ICON_SIZE);
+      smoothValue(borderRadius, borderRadius.get(), ICON_BORDER_RADIUS)
+    } else {
+      smoothValue(x, x.get(), 0);
+      smoothValue(y, y.get(), 0);
+      smoothValue(homeButtonX, homeButtonX.get(), (WINDOW_WIDTH - HOME_BUTTON_WIDTH) / 2);
+      smoothValue(homeButtonY, homeButtonY.get(), WINDOW_HEIGHT - HOME_BUTTON_HEIGHT - HOME_BUTTON_OFFSET);
+      smoothValue(height, height.get(), WINDOW_HEIGHT);
+      smoothValue(width, width.get(), WINDOW_WIDTH);
+      smoothValue(borderRadius, borderRadius.get(), APP_BORDER_RADIUS);
+    }
   }
 
   return (
     <div className="App" ref={constraintsRef}>
       <motion.div 
         className="dragable"
-        // drag={!isAnimating && isOpen}
-        // dragMomentum={false}
-        // dragConstraints={constraintsRef}
-        // onDrag={handleDrag}
-        // dragElastic={0}
-        // onDragStart={handleDragStart}
-        // onDragEnd={handleDragEnd}
         onClick={() => handleClick(isOpen)}
         style={{
           x,
           y,
           width,
           height,
-          borderRadius: isOpen ? borderRadius : 15,
+          borderRadius,
         }}
       >
       </motion.div>
