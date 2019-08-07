@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import smoothValue from './Utilities/smoothValue';
+import useExponentialDecay from './Utilities/exponentialDecay';
 
 import "./App.css";
 
@@ -24,6 +25,7 @@ const DRAG_DROPOFF = 400;
 const App = () => {
   const constraintsRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [linearDecay, exponentialDecay] = useExponentialDecay(400);
 
   const [dragStartX, setDragStartX] = useState(null);
   const [dragStartY, setDragStartY] = useState(null);
@@ -45,7 +47,8 @@ const App = () => {
   const homeButtonHeight = useTransform(dragDeltaY, [0, -DRAG_DROPOFF], [HOME_BUTTON_HEIGHT, HOME_BUTTON_HEIGHT / 4]);
   const dragBorderRadius = useTransform(dragDeltaY, [0, -DRAG_DROPOFF], [APP_BORDER_RADIUS, 10]);
 
-  const appY = useTransform(dragDeltaY, [0, -DRAG_DROPOFF, -WINDOW_HEIGHT], [0, -DRAG_DROPOFF, -(WINDOW_HEIGHT - (WINDOW_HEIGHT - DRAG_DROPOFF) / 2)])
+  // const appY = useTransform(dragDeltaY, [0, -DRAG_DROPOFF, -WINDOW_HEIGHT], [0, -DRAG_DROPOFF, -(WINDOW_HEIGHT - (WINDOW_HEIGHT - DRAG_DROPOFF) / 2)])
+  const appY = useTransform(dragDeltaY, [0, -DRAG_DROPOFF, ...linearDecay.map(x => -DRAG_DROPOFF - x)], [0, -DRAG_DROPOFF, ...exponentialDecay.map(x => -DRAG_DROPOFF - x)])
 
   const handleClick = (prevState) => {
     if (!prevState) {
