@@ -1,14 +1,14 @@
-.dragable {
+.appWrapper {
   position: relative;
   z-index: 99;
   transform: translateX(-50%);
   overflow: hidden;
+  transform-origin: top center;
 }
 
 .homeButton {
   width: 200px;
   height: 6px;
-  top: 0;
   border-radius: 3px;
   background: white;
   position: absolute;
@@ -22,4 +22,5 @@
   right: 0;
   bottom: 0;
   display: flex;
+  overflow: hidden;
 }
