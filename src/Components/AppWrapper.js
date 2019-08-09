@@ -24,9 +24,9 @@ const DRAG_DROPOFF = 400;
 const AppWrapper = ({constraints, Icon, children}) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const scale = useMotionValue(1);
   const [dragStartX, setDragStartX] = useState(null);
   const [dragStartY, setDragStartY] = useState(null);
+  const scale = useMotionValue(1);
   const dragDeltaX = useMotionValue(0);
   const dragDeltaY = useMotionValue(0);
 
@@ -34,26 +34,17 @@ const AppWrapper = ({constraints, Icon, children}) => {
   const height = useMotionValue(ICON_SIZE);
   const x = useMotionValue(ICON_X);
   const y = useMotionValue(ICON_Y);
-  const homeButtonX = useMotionValue(0);
-  const homeButtonY = useMotionValue(0);
+  const homeButtonX = useMotionValue((WINDOW_WIDTH / 2) - 100);
+  const homeButtonY = useMotionValue(WINDOW_HEIGHT - HOME_BUTTON_HEIGHT - HOME_BUTTON_OFFSET);
   const borderRadius = useMotionValue(ICON_BORDER_RADIUS);
   
-  const dragWidth = useTransform(dragDeltaY, [0, -DRAG_DROPOFF], [WINDOW_WIDTH, WINDOW_WIDTH / 4]);
   const dragHeight = useTransform(dragDeltaY, [0, -DRAG_DROPOFF], [WINDOW_HEIGHT, WINDOW_HEIGHT / 4]);
   const dragX = useTransform(scale, [1, 0], [0, (WINDOW_WIDTH - WINDOW_WIDTH * scale.get()) / 2])
-  const homeButtonWidth = useTransform(dragDeltaY, [0, -DRAG_DROPOFF], [HOME_BUTTON_WIDTH, HOME_BUTTON_WIDTH / 4]);
-  const homeButtonHeight = useTransform(dragDeltaY, [0, -DRAG_DROPOFF], [HOME_BUTTON_HEIGHT, HOME_BUTTON_HEIGHT / 4]);
-  const dragBorderRadius = useTransform(dragDeltaY, [0, -DRAG_DROPOFF], [APP_BORDER_RADIUS, 10]);
   
   const iconOpacity = useMotionValue(1);
   const appOpacity = useTransform(iconOpacity, [0, 1], [1, 0]);
-  const translatedScale = useTransform(dragHeight, [WINDOW_HEIGHT, 0], [1, 0]);
+  const translatedScale = useTransform(dragDeltaY, [0, -DRAG_DROPOFF], [1, 0.25]);
 
-  // const contentHeight = useMotionValue(60);
-  // const contentHeightTransform = useTransform(iconOpacity, [0, 0.5], [WINDOW_HEIGHT, 60]);
-  // const contentWidth = useMotionValue(60);
-  // const contentWidthTransform = useTransform(iconOpacity, [0, 0.5], [WINDOW_WIDTH, 60]);
-  
   const contentHeight = useTransform(iconOpacity, [0, 0.6], [WINDOW_HEIGHT, 60]);
   const contentWidth = useTransform(iconOpacity, [0, 0.6], [WINDOW_WIDTH, 60]);
 
@@ -67,10 +58,6 @@ const AppWrapper = ({constraints, Icon, children}) => {
       smoothValue(width, width.get(), WINDOW_WIDTH);
       smoothValue(borderRadius, ICON_BORDER_RADIUS, APP_BORDER_RADIUS);
       iconOpacity.set(0);
-
-      homeButtonX.set((WINDOW_WIDTH / 2) - (homeButtonWidth.get() / 2));
-      console.log('AppWrapper.js - homeButtonX ', homeButtonX.get())
-      homeButtonY.set(WINDOW_HEIGHT - HOME_BUTTON_HEIGHT - HOME_BUTTON_OFFSET) // windowHeight - homeButtonHeight - paddingBottom
 
       setIsOpen(true);
     }
@@ -94,7 +81,6 @@ const AppWrapper = ({constraints, Icon, children}) => {
     homeButtonY.set(WINDOW_HEIGHT - HOME_BUTTON_HEIGHT - HOME_BUTTON_OFFSET)
 
     scale.set(translatedScale.get());
-    borderRadius.set(dragBorderRadius.get());
   }
   
   const handleDragEnd = () => {
@@ -115,8 +101,6 @@ const AppWrapper = ({constraints, Icon, children}) => {
     } else {
       smoothValue(x, x.get(), 0);
       smoothValue(y, y.get(), 0);
-      // smoothValue(homeButtonX, homeButtonX.get(), (WINDOW_WIDTH - HOME_BUTTON_WIDTH) / 2);
-      // smoothValue(homeButtonY, homeButtonY.get(), WINDOW_HEIGHT - HOME_BUTTON_HEIGHT - HOME_BUTTON_OFFSET);
       smoothValue(height, height.get(), WINDOW_HEIGHT);
       smoothValue(width, width.get(), WINDOW_WIDTH);
       smoothValue(borderRadius, borderRadius.get(), APP_BORDER_RADIUS);
@@ -136,7 +120,14 @@ const AppWrapper = ({constraints, Icon, children}) => {
           borderRadius,
         }}
       >
-        <motion.div className="app-content" style={{ opacity: appOpacity, height: contentHeight, width: contentWidth }}>
+        <motion.div 
+          className="app-content"
+          style={{ 
+            opacity: appOpacity,
+            height: contentHeight,
+            width: contentWidth
+          }}
+        >
           {children}
         </motion.div>
         <motion.div style={{ opacity: iconOpacity, position: 'absolute' }}>
