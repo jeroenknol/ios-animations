@@ -1,23 +1,22 @@
-import React, { useRef } from "react";
+import React from "react";
 import AppWrapper from './Components/AppWrapper';
 
 import SettingsIcon from './Assets/AppIcons/Settings';
 
 import "./App.css";
 
-const App = () => {
-  const constraintsRef = useRef(null);
-
-  return (
-    <div className="Phone" ref={constraintsRef}>
-      <AppWrapper Icon={SettingsIcon} constraints={constraintsRef}>
-        <div className="outer">
-          <div className="inner"></div>
-        </div>
-      </AppWrapper>
-      <div className="quickAccessBar"></div>
-    </div>
-  );
-}
+const App = () => (
+  <div className="Phone">
+    <AppWrapper 
+      Icon={SettingsIcon}
+      iconPosition={{x: 288, y: 725}}
+    >
+      <div className="outer">
+        <div className="inner"></div>
+      </div>
+    </AppWrapper>
+    <div className="quickAccessBar"></div>
+  </div>
+);
 
 export default App;

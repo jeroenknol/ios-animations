@@ -12,8 +12,7 @@ const APP_BORDER_RADIUS = 40;
 // Icon
 const ICON_SIZE = 60;
 const ICON_BORDER_RADIUS = 15;
-const ICON_X = 288;
-const ICON_Y = 725;
+
 // Home button
 const HOME_BUTTON_WIDTH = 200;
 const HOME_BUTTON_HEIGHT = 6;
@@ -21,7 +20,7 @@ const HOME_BUTTON_OFFSET = 7;
 
 const DRAG_DROPOFF = 400;
 
-const AppWrapper = ({constraints, Icon, children}) => {
+const AppWrapper = ({constraints, Icon, children, iconPosition}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [dragStartX, setDragStartX] = useState(null);
@@ -32,8 +31,8 @@ const AppWrapper = ({constraints, Icon, children}) => {
 
   const width = useMotionValue(ICON_SIZE);
   const height = useMotionValue(ICON_SIZE);
-  const x = useMotionValue(ICON_X);
-  const y = useMotionValue(ICON_Y);
+  const x = useMotionValue(iconPosition.x);
+  const y = useMotionValue(iconPosition.y);
   const homeButtonX = useMotionValue((WINDOW_WIDTH / 2) - 100);
   const homeButtonY = useMotionValue(WINDOW_HEIGHT - HOME_BUTTON_HEIGHT - HOME_BUTTON_OFFSET);
   const borderRadius = useMotionValue(ICON_BORDER_RADIUS);
@@ -92,8 +91,8 @@ const AppWrapper = ({constraints, Icon, children}) => {
 
     if (dragDeltaY.get() < -DRAG_DROPOFF) {
       setIsOpen(false);
-      smoothValue(x, x.get(), ICON_X);
-      smoothValue(y, y.get(), ICON_Y);
+      smoothValue(x, x.get(), iconPosition.x);
+      smoothValue(y, y.get(), iconPosition.y);
       smoothValue(height, height.get(), ICON_SIZE);
       smoothValue(width, width.get(), ICON_SIZE);
       smoothValue(borderRadius, borderRadius.get(), ICON_BORDER_RADIUS);
