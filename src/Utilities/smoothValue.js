@@ -10,7 +10,7 @@ const smoothValue = (animValue, curr, target, starting = null) => {
       return;
     };
 
-    const next = (curr - target) * 0.85 + target;
+    const next = (curr - target) * 0.88 + target;
     animValue.set(next);
     smoothValue(animValue, next, target, startingVal);
   }, 15);

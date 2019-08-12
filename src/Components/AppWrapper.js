@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
-import smoothValue from '../Utilities/smoothValue';
+import smoothValue from '../utilities/smoothValue';
 
 import './AppWrapper.scss';
 
@@ -12,7 +12,6 @@ const APP_BORDER_RADIUS = 40;
 // Icon
 const ICON_SIZE = 60;
 const ICON_BORDER_RADIUS = 15;
-
 // Home button
 const HOME_BUTTON_WIDTH = 200;
 const HOME_BUTTON_HEIGHT = 6;
@@ -20,7 +19,7 @@ const HOME_BUTTON_OFFSET = 7;
 
 const DRAG_DROPOFF = 400;
 
-const AppWrapper = ({constraints, Icon, children, iconPosition}) => {
+const AppWrapper = ({Icon, children, iconPosition}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [dragStartX, setDragStartX] = useState(null);
@@ -43,6 +42,7 @@ const AppWrapper = ({constraints, Icon, children, iconPosition}) => {
   const iconOpacity = useMotionValue(1);
   const appOpacity = useTransform(iconOpacity, [0, 1], [1, 0]);
   const translatedScale = useTransform(dragDeltaY, [0, -DRAG_DROPOFF], [1, 0.25]);
+  const zIndex = useTransform(iconOpacity, [0, 0.99, 1], [100, 100, 99]);
 
   const contentHeight = useTransform(iconOpacity, [0, 0.6], [WINDOW_HEIGHT, 60]);
   const contentWidth = useTransform(iconOpacity, [0, 0.6], [WINDOW_WIDTH, 60]);
@@ -117,6 +117,7 @@ const AppWrapper = ({constraints, Icon, children, iconPosition}) => {
           height,
           scale,
           borderRadius,
+          zIndex
         }}
       >
         <motion.div 
