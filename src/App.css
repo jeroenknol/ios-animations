@@ -1,4 +1,4 @@
-.App {
+.Phone {
   position: relative;
   font-family: sans-serif;
   text-align: center;
@@ -8,26 +8,6 @@
   background: url('./Assets/bg.jpg') no-repeat center center;
   background-size: cover;
   overflow: hidden;
-}
-
-.dragable {
-  position: relative;
-  height: 60px;
-  width: 60px;
-  border-radius: 15px;
-  background: linear-gradient(#BBB, #999);
-  z-index: 99;
-  transform: translateX(-50%);
-}
-
-.homeButton {
-  width: 200px;
-  height: 6px;
-  top: 0;
-  border-radius: 3px;
-  background: white;
-  position: absolute;
-  z-index: 1000;
 }
 
 .quickAccessBar {
@@ -40,4 +20,21 @@
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.outer {
+  height: 812px;
+  width: 375px;
+  background-color: crimson;
+  padding: 20px;
+  display: flex;
+}
+
+.inner {
+  background-color: white;
+  flex-grow: 1;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

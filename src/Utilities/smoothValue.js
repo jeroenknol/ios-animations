@@ -1,35 +1,19 @@
-const smoothPositive = (animValue, curr, target) => {
+const smoothValue = (animValue, curr, target, starting = null) => {
+  const startingVal = starting || curr;
+  const endCondition = curr < target
+    ? (curr >= target) || curr > target - (target - startingVal) * 0.001 // smoothUpwards
+    : (curr <= target) || curr < target + (startingVal - target) * 0.001 // smoothDownwards
+     
   setTimeout(() => {
-    if ((curr <= target) || curr < target + 0.1) {
+    if (endCondition) {
       animValue.set(target);
-      // setIsAnimating(false);
       return;
     };
-    const next = (curr - target) * 0.85 + target;
-    animValue.set(next)
-    smoothPositive(animValue, next, target);
-  }, 15);
-}
 
-const smoothNegative = (animValue, curr, target) => {
-  setTimeout(() => {
-    if ((curr >= target) || curr + 0.1 > target) {
-      animValue.set(target);
-      // setIsAnimating(false);
-      return;
-    };
-    const next = (curr - target) * 0.85 + target;
-    animValue.set(next)
-    smoothNegative(animValue, next, target);
+    const next = (curr - target) * 0.88 + target;
+    animValue.set(next);
+    smoothValue(animValue, next, target, startingVal);
   }, 15);
-}
-
-const smoothValue = (animValue, curr, target) => {
-  if (curr > target) {
-    smoothPositive(animValue, curr, target)
-  } else {
-    smoothNegative(animValue, curr, target)
-  }
 }
 
 export default smoothValue;
