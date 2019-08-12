@@ -1,8 +1,8 @@
 import React from "react";
-import AppWrapper from './components/AppWrapper';
+import AppWrapper from './Components/AppWrapper';
 
-import SettingsIcon from './assets/AppIcons/Settings';
-import ClockIcon from './assets/AppIcons/Clock';
+import SettingsIcon from './Assets/AppIcons/Settings';
+import ClockIcon from './Assets/AppIcons/Clock';
 
 import "./App.css";
 

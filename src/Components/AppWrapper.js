@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
-import smoothValue from '../utilities/smoothValue';
+import smoothValue from '../Utilities/smoothValue';
 
 import './AppWrapper.scss';
 
